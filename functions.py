@@ -1,7 +1,5 @@
 import calendar as cal
 
-print(cal.weekheader(3))
-print(cal.monthcalendar(2023, 6))
 
 
 def prev_month_days(year, month):
