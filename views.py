@@ -12,7 +12,6 @@ def show_calendar():
     month = int(month_entry.get())
 
     # Generate the calendar for the specified year and month
-    #cal = calendar.month(year, month)
     current_month = cal.monthcalendar(year, month)
     prev_month = prev_month_days(year, month)
     next_month = next_month_days(year, month)
@@ -26,25 +25,23 @@ def show_calendar():
     for day in month_frame.winfo_children():
         day.destroy()
 
-    style = ttk.Style(month_frame)
-    style.theme_use('alt')
-    style.configure('prev_and_next_month.TButton', background='#eff0eb')
+
 
     if current_month[0][0] == 0:
-        show_month_days(prev_month, 1, 'prev_and_next_month.TButton')
-    show_month_days(current_month, 1)
+        show_month_days(prev_month, 1)
+    show_month_days(current_month, 1, 4)
     if len(current_month) == 6:
-        show_month_days(next_month, 6, 'prev_and_next_month.TButton')
+        show_month_days(next_month, 6)
     elif current_month[-1][-1] == 0:
-        show_month_days(next_month, 5,  'prev_and_next_month.TButton')
+        show_month_days(next_month, 5)
 
 
-def show_month_days(month, starting_row, style='TButton'):
+def show_month_days(month, starting_row, border=1):
     row_number = starting_row
     for week in month:
         for index, day in enumerate(week):
             if day != 0:
-                button = ttk.Button(master=month_frame, width=3, text=day, style=style)
+                button = tk.Button(master=month_frame, width=3, text=day, borderwidth=border)
                 button.grid(row=row_number, column=index)
         row_number += 1
 
