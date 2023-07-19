@@ -1,114 +1,84 @@
-import calendar as cal
+# import calendar as cal
 import tkinter as tk
 from tkinter import ttk
+from tkinter.messagebox import showerror
 from functions import *
 
-week_labels = ["Mon", "Tue", "Wen", "Thr", "Fri", "Sat", "Sun"]
+class AddEventView(tk.Toplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        self.title("Add event")
+        self.geometry('250x150')
+        self.columnconfigure(2, weight=1)
+
+        self.name_label = ttk.Label(self, text='Name:')
+        self.name_label.grid(row=0, column=0, padx=10, pady=5)
+
+        self.name_var = tk.StringVar()
+        self.name_entry = ttk.Entry(self, textvariable=self.name_var, justify='right')
+        self.name_entry.grid(row=0, column=1, columnspan=3, padx=10, pady=5, sticky=tk.NSEW)
+        self.name_entry.focus()
+
+        self.date_label = ttk.Label(self, text='Date:')
+        self.date_label.grid(row=1, column=0, padx=10, pady=5)
+
+        self.date_button = ttk.Button(self, text='CC', width=5)
+        self.date_button.grid(row=1, column=1, padx=10)
+
+        self.date_var = tk.StringVar(self, "dd.mm.yy")
+        self.date_entry = ttk.Entry(self, textvariable=self.date_var, justify='right')
+        self.date_entry.grid(row=1, column=2, padx=10, pady=5, sticky=tk.NSEW)
+
+        self.time_label = ttk.Label(self, text='Time:')
+        self.time_label.grid(row=2, column=0, padx=10, pady=5)
+
+        self.time_var = tk.StringVar(self, "hh:mm")
+        self.time_entry = ttk.Entry(self, textvariable=self.time_var, justify='right')
+        self.time_entry.grid(row=2, column=1, padx=10, pady=5, sticky=tk.NSEW, columnspan=3)
+
+        # setting frame for buttons
+        self.button_frame = ttk.Frame(self)
+        self.button_frame.grid(row=3, column=0, columnspan=3)
+
+        self.cancel_button = tk.Button(self.button_frame, text="Cancel", command=self.cancel)
+        self.cancel_button.grid(row=0, column=0, pady=10, padx=10)
+
+        self.add_button = tk.Button(self.button_frame, text="Add event", command=self.add_event)
+        self.add_button.grid(row=0, column=1, pady=10, padx=10)
+
+        self.interface = None
+
+    def set_interface(self, interface):
+        self.interface = interface
+
+    def add_event(self):
+        self.interface.add_event(self.name_var.get(), self.date_var.get(), self.time_var.get())
+
+    def cancel(self):
+        self.destroy()
 
 
-def show_calendar():
-    # Retrieve the year and month from the input fields
-    year = int(year_entry.get())
-    month = int(month_entry.get())
+######################################################################################
+class ShowEventsView(tk.Toplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+        self.title("List of your events")
+        self.geometry('300x200')
 
-    # Generate the calendar for the specified year and month
-    current_month = cal.monthcalendar(year, month)
-    prev_month = prev_month_days(year, month)
-    next_month = next_month_days(year, month)
+        self.interface = self.parent.interface
 
-    # Display the calendar
-    for index, day in enumerate(week_labels):
-        label = ttk.Label(master=week_days_frame, text=day)
-        label.grid(row=0, column=index, padx=5, pady=3)
-
-
-    for day in month_frame.winfo_children():
-        day.destroy()
-
-
-
-    if current_month[0][0] == 0:
-        show_month_days(prev_month, 1)
-    show_month_days(current_month, 1, 4)
-    if len(current_month) == 6:
-        show_month_days(next_month, 6)
-    elif current_month[-1][-1] == 0:
-        show_month_days(next_month, 5)
-
-
-def show_month_days(month, starting_row, border=1):
-    row_number = starting_row
-    for week in month:
-        for index, day in enumerate(week):
-            if day != 0:
-                button = tk.Button(master=month_frame, width=3, text=day, borderwidth=border)
-                button.grid(row=row_number, column=index)
-        row_number += 1
-
-
-def increase(entry_field):
-    value = int(entry_field.get())
-    entry_field.delete(0, 'end')
-    entry_field.insert(0, str(value+1))
-
-def decrease(entry_field):
-    value = int(entry_field.get())
-    entry_field.delete(0, 'end')
-    entry_field.insert(0, str(value-1))
-
-
-
-
-
-# Create the main window
-window = tk.Tk()
-window.title("Choose a day")
-
-# Create a frame to hold the input fields
-input_frame = ttk.Frame(window)
-input_frame.pack()
-
-# Create the year label, buttons and entry field
-year_label = ttk.Label(input_frame, text="Year:")
-year_label.grid(row=0, column=1, padx=5)
-
-year_entry = ttk.Entry(input_frame, width=10)
-year_entry.grid(row=1, column=1, padx=5)
-
-year_decrease_btn = ttk.Button(input_frame, width=2, text="<", command=lambda: decrease(year_entry))
-year_decrease_btn.grid(row=1, column=0, padx=5)
-
-year_increase_btn = ttk.Button(input_frame, width=2, text=">", command=lambda: increase(year_entry))
-year_increase_btn.grid(row=1, column=2, padx=5)
+        for event in self.interface.storage.events_list:
 
 
 
-# Create the month label,buttons and entry field
-month_label = ttk.Label(input_frame, text="Month:")
-month_label.grid(row=0, column=4, padx=5)
-
-month_entry = ttk.Entry(input_frame, width=10)
-month_entry.grid(row=1, column=4, padx=5)
-
-month_decrease_btn = ttk.Button(input_frame, width=2, text="<", command=lambda: decrease(month_entry))
-month_decrease_btn.grid(row=1, column=3, padx=5)
-
-month_increase_btn = ttk.Button(input_frame, width=2, text=">", command=lambda: increase(month_entry))
-month_increase_btn.grid(row=1, column=5, padx=5)
-
-
-# Create the "Show Calendar" button
-show_button = ttk.Button(window, text="Show Calendar", command=show_calendar)
-show_button.pack(pady=10)
-
-# Create frames to hold weekday names and month view
-week_days_frame = ttk.Frame(window)
-week_days_frame.pack(pady=5)
-
-month_frame = ttk.Frame(window)
-month_frame.pack(pady=3)
 
 
 
-# Start the GUI event loop
-window.mainloop()
+class SaveCalendarView(tk.Toplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        self.title("Saving calendar")
+        self.geometry('300x200')

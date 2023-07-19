@@ -1,27 +1,5 @@
 import string
 
-title_accepted_signs = set().union(string.digits, string.ascii_letters, ' ', ',', '.', '-')
-
-
-def validate_title(title):
-    if len(title) == 0:
-        return False
-
-    for sign in title:
-        if sign not in title_accepted_signs:
-            return False
-    return True
-
-
-assert validate_title('') == False
-assert validate_title('title;') == False
-assert validate_title('tytuł') == False
-assert validate_title(' ') == True
-assert validate_title('3435') == True
-assert validate_title('kura') == True
-
-
-#################################################
 
 def is_leap_year(year):
     if year % 400 == 0:
