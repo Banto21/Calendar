@@ -40,19 +40,16 @@ class Event:
 
 class Storage:
     def __init__(self):
-        self.events_list = []
+        self.events_dict = {}
         self.current_id = 0
 
     def add_event(self, name, date, time):
-        self.current_id +=1
-        self.events_list.append(
-            {
-                'event_id': self.current_id,
-                'name': name,
-                'date': date,
-                'time': time
-            }
-        )
+        self.current_id += 1
+        self.events_dict[str(self.current_id)] = {
+            'name': name,
+            'date': date,
+            'time': time
+        }
 
     def show_events(self):
         pass
@@ -65,4 +62,3 @@ class Storage:
 
     def delete_event(self):
         pass
-

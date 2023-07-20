@@ -1,7 +1,7 @@
 # import calendar as cal
 import tkinter as tk
 from tkinter import ttk
-from tkinter.messagebox import showerror
+from tkinter.messagebox import askyesno
 from functions import *
 
 class AddEventView(tk.Toplevel):
@@ -67,9 +67,59 @@ class ShowEventsView(tk.Toplevel):
         self.title("List of your events")
         self.geometry('300x200')
 
+        self.events_frame = ttk.Frame(self)
+        self.events_frame.pack()
+        self.events_row_number = 0
+
+        self.action_buttons_frame = ttk.Frame(self)
+        self.action_buttons_frame.pack()
+
+        self.edit_button = ttk.Button(self.action_buttons_frame, text='Edit', command=self.edit_event)
+        self.edit_button.grid(row=0, column=0, padx=10, pady=10)
+        self.delete_button = ttk.Button(self.action_buttons_frame, text='Delete', command=self.delete_event)
+        self.delete_button.grid(row=0, column=1, padx=10, pady=10)
+        self.exit_button = ttk.Button(self.action_buttons_frame, text='Exit', command=self.exit)
+        self.exit_button.grid(row=0, column=2, padx=10, pady=10)
+
         self.interface = self.parent.interface
 
-        for event in self.interface.storage.events_list:
+        self.show_events()
+
+        self.checked_events = []
+
+    def show_events(self):
+        for event_id, event in self.interface.storage.events_dict.items():
+
+            check = tk.Checkbutton(self.events_frame, text=event['name'], variable=tk.StringVar(),
+                                    onvalue=event_id, offvalue='0')
+            check.deselect()
+            check.grid(row=self.events_row_number, column=0, padx=10, pady=5, sticky='w')
+
+            date_label = ttk.Label(self.events_frame, text=event['date'])
+            date_label.grid(row=self.events_row_number, column=1, padx=10, pady=5)
+
+            time_label = ttk.Label(self.events_frame, text=event['time'])
+            time_label.grid(row=self.events_row_number, column=2, padx=10, pady=5)
+
+            self.events_row_number += 1
+
+        self.events_row_number = 0
+
+    def check_clicked(self):
+        pass
+
+
+
+    def edit_event(self):
+        pass
+
+    def delete_event(self):
+        pass
+
+    def exit(self):
+        answer = askyesno(title='Confirmation', message='Are you sure that you want to quit?')
+        if answer:
+            self.destroy()
 
 
 
