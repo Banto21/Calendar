@@ -51,8 +51,6 @@ class Storage:
             'time': time
         }
 
-    def show_events(self):
-        pass
 
     def delete_events(self, id_list):
         pass
