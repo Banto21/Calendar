@@ -18,7 +18,6 @@ class Interface:
             self.storage.add_event(name, date, time)
 
             self.add_event_view.destroy()
-            print(self.storage.events_list)
 
         except ValueError as message:
             showerror(title="Error", message=message)
