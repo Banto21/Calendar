@@ -4,6 +4,7 @@ from tkinter import ttk
 from tkinter.messagebox import askyesno
 from functions import *
 
+
 class AddEventView(tk.Toplevel):
     def __init__(self, parent):
         super().__init__(parent)
@@ -23,7 +24,7 @@ class AddEventView(tk.Toplevel):
         self.date_label = ttk.Label(self, text='Date:')
         self.date_label.grid(row=1, column=0, padx=10, pady=5)
 
-        self.date_button = ttk.Button(self, text='CC', width=5)
+        self.date_button = ttk.Button(self, text='CC', width=5, command=self.show_month)
         self.date_button.grid(row=1, column=1, padx=10)
 
         self.date_var = tk.StringVar(self, "dd.mm.yy")
@@ -52,11 +53,24 @@ class AddEventView(tk.Toplevel):
     def set_interface(self, interface):
         self.interface = interface
 
+    def show_month(self):
+        show_month_view = ShowMonthView(self)
+        show_month_view.grab_set()
+
     def add_event(self):
         self.interface.add_event(self.name_var.get(), self.date_var.get(), self.time_var.get())
 
     def cancel(self):
         self.destroy()
+
+
+######################################################################################
+
+class ShowMonthView(tk.Toplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.title("Pick a day")
+        self.geometry('300x300')
 
 
 ######################################################################################
@@ -89,9 +103,8 @@ class ShowEventsView(tk.Toplevel):
 
     def show_events(self):
         for event_id, event in self.interface.storage.events_dict.items():
-
             check = tk.Checkbutton(self.events_frame, text=event['name'], variable=tk.StringVar(),
-                                    onvalue=event_id, offvalue='0')
+                                   onvalue=event_id, offvalue='0')
             check.deselect()
             check.grid(row=self.events_row_number, column=0, padx=10, pady=5, sticky='w')
 
@@ -108,8 +121,6 @@ class ShowEventsView(tk.Toplevel):
     def check_clicked(self):
         pass
 
-
-
     def edit_event(self):
         pass
 
@@ -120,10 +131,6 @@ class ShowEventsView(tk.Toplevel):
         answer = askyesno(title='Confirmation', message='Are you sure that you want to quit?')
         if answer:
             self.destroy()
-
-
-
-
 
 
 class SaveCalendarView(tk.Toplevel):
